@@ -1,3 +1,8 @@
+provider "google" {
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
+}
 # Create a VM instance for monitoring
 resource "google_compute_instance" "monitoring_vm" {
   name         = "monitoring-vm"
