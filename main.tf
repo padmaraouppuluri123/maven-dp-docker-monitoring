@@ -4,6 +4,7 @@ provider "google" {
   zone    = var.zone
 }
 
+# Create a VM instance for monitoring
 resource "google_compute_instance" "monitoring_vm" {
   name         = "monitoring-vm"
   machine_type = "e2-medium"
@@ -24,24 +25,15 @@ resource "google_compute_instance" "monitoring_vm" {
 
   metadata_startup_script = <<-EOF
     #!/bin/bash
-    apt-get update
-    apt-get install -y docker.io
-    systemctl start docker
-    systemctl enable docker
-
-    # Install Prometheus
-    docker run -d --name prometheus \
-      -p 9090:9090 \
-      -v /prometheus.yml:/etc/prometheus/prometheus.yml \
-      prom/prometheus
-
-    # Install Grafana
-    docker run -d --name grafana \
-      -p 3000:3000 \
-      grafana/grafana
+    gsutil cp gs://your-bucket/init.sh /tmp/init.sh
+    chmod +x /tmp/init.sh
+    /tmp/init.sh
   EOF
+
+  tags = ["prometheus-grafana"]
 }
 
+# Allow firewall rules for Prometheus and Grafana ports (9090 and 3000)
 resource "google_compute_firewall" "allow_prometheus_grafana" {
   name    = "allow-prometheus-grafana"
   network = "default"
@@ -52,27 +44,4 @@ resource "google_compute_firewall" "allow_prometheus_grafana" {
   }
 
   target_tags = ["prometheus-grafana"]
-}
-
-resource "google_compute_instance" "monitoring_vm_tags" {
-  name         = google_compute_instance.monitoring_vm.name
-  machine_type = google_compute_instance.monitoring_vm.machine_type
-  zone         = google_compute_instance.monitoring_vm.zone
-
-  boot_disk {
-    initialize_params {
-      image = google_compute_instance.monitoring_vm.boot_disk.initialize_params.image
-    }
-  }
-
-  network_interface {
-    network = google_compute_instance.monitoring_vm.network_interface.network
-    access_config {
-      // Allocate a one-to-one NAT IP to the instance
-    }
-  }
-
-  metadata_startup_script = google_compute_instance.monitoring_vm.metadata_startup_script
-
-  tags = ["prometheus-grafana"]
 }
