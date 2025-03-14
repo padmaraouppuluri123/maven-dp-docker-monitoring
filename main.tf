@@ -25,7 +25,7 @@ resource "google_compute_instance" "monitoring_vm" {
 
   metadata_startup_script = <<-EOF
     #!/bin/bash
-    gsutil cp gs://your-bucket/init.sh /tmp/init.sh
+    gsutil cp gs://my-terraform-bucket-535168da5ef156/init.sh /tmp/init.sh
     chmod +x /tmp/init.sh
     /tmp/init.sh
   EOF
