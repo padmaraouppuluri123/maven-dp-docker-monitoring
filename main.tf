@@ -18,22 +18,22 @@ resource "google_compute_instance" "monitoring_vm" {
 
   network_interface {
     network = "default"
-    access_config {
-      # Allocate a one-to-one NAT IP to the instance
-    }
+    access_config {}
   }
 
   metadata_startup_script = <<-EOF
     #!/bin/bash
     apt-get update
-    apt-get install -y google-cloud-sdk
+    apt-get install -y google-cloud-sdk curl docker.io
+    systemctl start docker
+    systemctl enable docker
     gsutil cp gs://sm-test-bucket/init.sh /tmp/init.sh
     chmod +x /tmp/init.sh
     /tmp/init.sh
   EOF
 
   service_account {
-    email  = "your-service-account@${var.project_id}.iam.gserviceaccount.com"
+    email  = "639829008083-compute@developer.gserviceaccount.com"
     scopes = ["cloud-platform"]
   }
 
