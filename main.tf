@@ -33,7 +33,7 @@ resource "google_compute_instance" "monitoring_vm" {
   EOF
 
   service_account {
-    email  = "639829008083-compute@developer.gserviceaccount.com"
+    email  = "51313160001-compute@developer.gserviceaccount.com"
     scopes = ["cloud-platform"]
   }
 
