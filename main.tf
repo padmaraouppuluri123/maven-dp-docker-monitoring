@@ -12,7 +12,7 @@ resource "google_compute_instance" "monitoring_vm" {
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "projects/debian-cloud/global/images/family/debian-10"
     }
   }
 
