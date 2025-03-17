@@ -27,7 +27,7 @@ resource "google_compute_instance" "monitoring_vm" {
     #!/bin/bash
     apt-get update
     apt-get install -y google-cloud-sdk
-    gsutil cp gs://my-terraform-bucket-535168da5ef156/init.sh /tmp/init.sh
+    gsutil cp gs://sm-test-bucket/init.sh /tmp/init.sh
     chmod +x /tmp/init.sh
     /tmp/init.sh
   EOF
